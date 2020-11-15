@@ -1,12 +1,8 @@
 <template>
-  <h1>product : {{ productName }}</h1>
+  <h1>product : {{ genreName + genreId }}</h1>
 </template>
 <script>
 export default {
-  computed: {
-    productName() {
-      return this.$route.params.id;
-    },
-  },
+  props: ["genreName", "genreId"],
 };
 </script>

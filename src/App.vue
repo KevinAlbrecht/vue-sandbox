@@ -15,3 +15,8 @@ export default {
   name: "App",
 };
 </script>
+<style>
+ul {
+  list-style-type: none;
+}
+</style>
