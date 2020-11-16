@@ -8,9 +8,14 @@
         class="slider_slide"
         :style="{ transform: `translateX(${translate}%)` }"
       >
-        <div class="box" v-for="movie in movies" :key="movie.id">
-          {{ movie.title }}
-        </div>
+        <div
+          class="box"
+          v-for="movie in movies"
+          :key="movie.id"
+          :style="{
+            backgroundImage: `url(${posterUrl(movie.poster_path)})`,
+          }"
+        ></div>
       </div>
       <span @click="goRight()" class="arrow arrow-next"><b></b></span>
     </div>
@@ -27,6 +32,10 @@ export default {
   },
 
   methods: {
+    posterUrl(path) {
+      console.log("lol");
+      return `${process.env.VUE_APP_TMDB_IMG_URL}${path}`;
+    },
     goLeft() {
       this.translate += 100;
     },
@@ -43,6 +52,7 @@ export default {
 
 .slider_main h2.title {
   color: white;
+  padding-left: 50px;
 }
 
 .slider_main .slider_container {
@@ -57,7 +67,7 @@ export default {
   top: 0;
   bottom: 0;
   width: 50px;
-  background-color: #ffffff1a;
+  background-color: rgba(20, 20, 20, 0.5);
   display: flex;
   justify-content: center;
   cursor: pointer;
@@ -73,12 +83,19 @@ export default {
   left: 0;
 }
 
-.slider_main .slider_container .arrow.arrow-prev b::before {
-  content: "<";
-}
-
 .slider_main .slider_container .arrow.arrow-next {
   right: 0;
+}
+
+.slider_main .slider_container .arrow b::before,
+.slider_main .slider_container .arrow b::after {
+  color: white;
+  font-weight: 700;
+  font-size: 25px;
+}
+
+.slider_main .slider_container .arrow.arrow-prev b::before {
+  content: "<";
 }
 
 .slider_main .slider_container .arrow.arrow-next b::after {
@@ -89,18 +106,19 @@ export default {
 
 .slider_main .slider_container .slider_slide {
   overflow-x: visible;
-  padding: 10px 50px;
+  padding: 0 50px;
   white-space: nowrap;
   position: relative;
-transition:transform 700ms;
+  transition: transform 700ms;
+  height: 290px;
 }
 
 .slider_main .slider_container .slider_slide .box {
-  height: 160px;
-  width: 33%;
+  height: 290px;
+  width: 193px;
   display: inline-block;
   margin-right: 5px;
-  /* debug */
-  background-color: white;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 </style>
