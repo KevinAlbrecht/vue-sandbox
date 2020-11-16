@@ -2,7 +2,7 @@ import UrlBuilder from '../helpers/UrlBuilder';
 
 class OmdbApiService {
 	constructor() { }
-	#baseApi = `http://www.omdbapi.com?apikey=e62db0db&`;
+	#baseApi = `http://www.omdbapi.com?`;
 
 	movieType = {
 		MOVIE: "movie",

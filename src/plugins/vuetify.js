@@ -9,12 +9,12 @@ export default new Vuetify({
 		themes: {
 			light: {
 				primary: colors.teal.darken1,
-				secondary: colors.teal.lighten4,
+				secondary: '#34495e',
 				accent: colors.teal.accent2
 			},
 			dark: {
-				primary: colors.teal.darken1,
-				secondary: colors.teal.lighten4,
+				primary: '#41b883',
+				secondary: '#34495e',
 				accent: colors.teal.accent2
 			}
 		}

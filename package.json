@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode dev",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -39,7 +39,7 @@
       "parser": "babel-eslint"
     },
     "rules": {
-	  "no-unused-vars":"warn"
+	  "no-unused-vars":"warn","no-debugger":"warn"
 	}
   },
   "browserslist": [

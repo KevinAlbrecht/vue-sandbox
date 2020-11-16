@@ -4,7 +4,7 @@
       <div class="d-flex align-center"></div>
       <v-spacer></v-spacer>
     </v-app-bar>
-    <v-main>
+    <v-main :style="{ background: $vuetify.theme.themes[theme].secondary }">
       <router-view></router-view>
     </v-main>
   </v-app>
@@ -13,6 +13,11 @@
 <script>
 export default {
   name: "App",
+  computed: {
+    theme() {
+      return this.$vuetify.theme.dark ? "dark" : "light";
+    },
+  },
 };
 </script>
 <style>

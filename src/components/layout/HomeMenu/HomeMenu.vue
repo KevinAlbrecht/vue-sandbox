@@ -44,14 +44,13 @@
   </div>
 </template>
 <script>
-import ProductService from "../../../services/productService";
+import MoviesService from "../../../services/moviesService";
 
 export default {
   methods: {
     async fetchCategories() {
       this.isLoading = true;
-      const result = await ProductService.getGenres();
-      console.log("ok", result);
+      const result = await MoviesService.getGenres();
       this.genres = result;
       this.isLoading = false;
     },
@@ -72,6 +71,9 @@ export default {
   width: 260px;
   padding: 35px 0px 60px 20px;
   border-right: 1px solid #1976d240;
+  position: fixed;
+  background-color: white;
+  z-index: 1;
 }
 
 #home-menu ul {
@@ -90,6 +92,7 @@ ul li a:hover {
 .category-title {
   font-size: 1.17em;
   font-weight: 600;
+  color: #34495e;
 }
 #home-menu ul .sub-category {
   padding-left: 20px;
