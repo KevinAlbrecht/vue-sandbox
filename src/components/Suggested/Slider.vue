@@ -6,16 +6,26 @@
       <div
         v-if="movies"
         class="slider_slide"
-        :style="{ transform: `translateX(${translate}%)` }"
+        :style="{
+          transform: `translateX(calc(${translate}% + ${Math.abs(translate)}px))`,
+        }"
       >
         <div
           class="box"
           v-for="movie in movies"
           :key="movie.id"
-          :style="{
-            backgroundImage: `url(${posterUrl(movie.poster_path)})`,
-          }"
-        ></div>
+        >
+          <router-link
+            :to="{
+              name: 'movie',
+              params: { movieId: movie.id, movieName: movie.title },
+            }"
+          >
+            <div class="img_container">
+              <img v-once :src="posterUrl(movie.poster_path)" />
+            </div>
+          </router-link>
+        </div>
       </div>
       <span @click="goRight()" class="arrow arrow-next"><b></b></span>
     </div>
@@ -25,15 +35,26 @@
 <script>
 export default {
   props: ["movies", "title"],
+  computed: {
+    vMovies: {
+      get() {
+        const val = [...this.movies];
+        const l = Math.floor(val.length / 3);
+        val.unshift(...val.splice(val.length - l, l));
+        return val;
+      },
+    },
+  },
   data() {
     return {
       translate: 0,
+      $_vzdMovies: [],
+      rawBoxPart: 20,
     };
   },
 
   methods: {
     posterUrl(path) {
-      console.log("lol");
       return `${process.env.VUE_APP_TMDB_IMG_URL}${path}`;
     },
     goLeft() {
@@ -110,15 +131,29 @@ export default {
   white-space: nowrap;
   position: relative;
   transition: transform 700ms;
-  height: 290px;
+  line-height: 0;
 }
 
 .slider_main .slider_container .slider_slide .box {
-  height: 290px;
-  width: 193px;
+  width: calc(16.66666667% - 10px + 5px);
   display: inline-block;
   margin-right: 5px;
-  background-size: contain;
-  background-repeat: no-repeat;
+}
+
+.slider_main .slider_container .slider_slide .box .img_container {
+  width: 100%;
+  height: 0;
+  position: relative;
+  overflow: hidden;
+  padding-top: 150%;
+}
+
+.slider_main .slider_container .slider_slide .box .img_container img {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 </style>
