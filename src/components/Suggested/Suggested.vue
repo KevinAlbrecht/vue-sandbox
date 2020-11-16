@@ -34,7 +34,6 @@ export default {
 <style>
 #suggested-content {
   width: 100%;
-  padding-left: 260px;
-  padding: 50px 50px 50px 310px;
+  padding: 50px 0 50px 260px;
 }
 </style>
