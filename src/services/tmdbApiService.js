@@ -1,51 +1,48 @@
-// import UrlBuilder from '../helpers/UrlBuilder';
-
+import HttpClient from './httpService';
 class TmdbApiService {
-	constructor() { }
-	#apiKey = '679d3846a91ee6e3a5416a6dcda44ea4';
+	#httpClient;
+	#apiKey = process.env.VUE_APP_TMDB_APIKEY;
 	#baseApi = 'https://api.themoviedb.org/3/';
-	#genreUrl = this.#baseApi + 'genre/movie/list?';
-	#topRated = this.#baseApi + 'movie/top_rated?';
-	#latest = this.#baseApi + 'movie/latest?';
-	#popular = this.#baseApi + 'movie/popular?';
+	#genreUrl = 'genre/movie/list?';
+	#topRated = 'movie/top_rated?';
+	#latest = 'movie/latest?';
+	#popular = 'movie/popular?';
+	#trending = 'trending/movie/day?';
+	#discorver = 'discover/movie?';
+	constructor() {
+		this.#httpClient = new HttpClient(this.#baseApi, this.#apiKey);
+	}
+
+	async getDiscover() {
+		return await this.#httpClient.fetch(this.#discorver);
+	}
+	async getTrending() {
+		return await this.#httpClient.fetch(this.#trending);
+	}
 
 	async getGenres() {
-		const url = `${this.#genreUrl}api_key=${this.#apiKey}`;
-		return await fetch(url,{cache:'force-cache'});
+		return await this.#httpClient.fetch(this.#genreUrl);
 	}
 
 	async getTopRaded() {
-		const url = `${this.#topRated}api_key=${this.#apiKey}`;
-		return await fetch(url,{cache:'force-cache'});
+		return await this.#httpClient.fetch(this.#topRated);
 	}
 
 	async getLatest() {
-		const url = `${this.#latest}api_key=${this.#apiKey}`;
-		return await fetch(url,{cache:'force-cache'});
+		return await this.#httpClient.fetch(this.#latest);
 	}
 
 	async getPopular() {
-		const url = `${this.#popular}api_key=${this.#apiKey}`;
-		return await fetch(url,{cache:'force-cache'});
+		return await this.#httpClient.fetch(this.#popular);
 	}
 
 	async search(s, type, page) {
-	
 	}
 
 	async getById(id) {
-		
 	}
 }
 
-// class TmdbUrlBuilder extends UrlBuilder {
-// 	construct(baseUrl) {
-// 		super(baseUrl);
-// 	}
-
-// }
-
 const instance = new TmdbApiService();
-
 
 export default instance;
