@@ -2,32 +2,30 @@
   <div class="slider_main">
     <h2 class="title">{{ title }}</h2>
     <div class="slider_container">
-      <span @click="goLeft()" class="arrow arrow-prev"><b></b></span>
+      <span @click="slide(true)" class="arrow arrow-prev"><b></b></span>
       <div
-        v-if="movies"
-        class="slider_slide"
+        v-if="vMovies"
+        :class="['slider_slide', inTransition ? 'in-transition' : '']"
         :style="{
-          transform: `translateX(calc(${translate}% + ${Math.abs(translate)}px))`,
+          transform: `translateX(calc(${translate}% + ${Math.abs(
+            translate
+          )}px))`,
         }"
       >
-        <div
-          class="box"
-          v-for="movie in movies"
-          :key="movie.id"
-        >
-          <router-link
+        <div class="box" v-for="movie in vMovies" :key="movie.id">
+          <!-- <router-link
             :to="{
               name: 'movie',
               params: { movieId: movie.id, movieName: movie.title },
             }"
-          >
-            <div class="img_container">
-              <img v-once :src="posterUrl(movie.poster_path)" />
-            </div>
-          </router-link>
+          > -->
+          <div class="img_container">
+            <img v-once :src="computePosterUrl(movie.poster_path)" />
+          </div>
+          <!-- </router-link> -->
         </div>
       </div>
-      <span @click="goRight()" class="arrow arrow-next"><b></b></span>
+      <span @click="slide()" class="arrow arrow-next"><b></b></span>
     </div>
   </div>
 </template>
@@ -35,33 +33,45 @@
 <script>
 export default {
   props: ["movies", "title"],
-  computed: {
-    vMovies: {
-      get() {
-        const val = [...this.movies];
-        const l = Math.floor(val.length / 3);
-        val.unshift(...val.splice(val.length - l, l));
-        return val;
-      },
-    },
-  },
   data() {
     return {
+      get slideUnity() {
+        return 100;
+      },
+      vMovies: this.movies,
+      inTransition: false,
       translate: 0,
-      $_vzdMovies: [],
       rawBoxPart: 20,
     };
   },
-
   methods: {
-    posterUrl(path) {
+    computePosterUrl(path) {
       return `${process.env.VUE_APP_TMDB_IMG_URL}${path}`;
     },
-    goLeft() {
-      this.translate += 100;
+    slide(isLeft = false) {
+      if (this.inTransition === false) {
+        this.inTransition = true;
+        isLeft
+          ? (this.translate += this.slideUnity)
+          : (this.translate -= this.slideUnity);
+
+        setTimeout(() => {
+          this.inTransition = false;
+          if (this.translate !== -this.slideUnity) {
+            this.translate = -this.slideUnity;
+            this.$_reorder(isLeft);
+          }
+        }, 700);
+      }
     },
-    goRight() {
-      this.translate -= 100;
+    $_reorder(isLeft = false) {
+      const moviesCount = this.vMovies.length;
+      const itemsToReorder = Math.floor(moviesCount / 3);
+      if (isLeft)
+        this.vMovies.unshift(
+          ...this.vMovies.splice(moviesCount - itemsToReorder, itemsToReorder)
+        );
+      else this.vMovies.push(...this.vMovies.splice(0, itemsToReorder));
     },
   },
 };
@@ -130,8 +140,11 @@ export default {
   padding: 0 50px;
   white-space: nowrap;
   position: relative;
-  transition: transform 700ms;
   line-height: 0;
+}
+
+.slider_main .slider_container .slider_slide.in-transition {
+  transition: transform 700ms;
 }
 
 .slider_main .slider_container .slider_slide .box {
