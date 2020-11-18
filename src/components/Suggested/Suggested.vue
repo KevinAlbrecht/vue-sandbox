@@ -2,7 +2,7 @@
   <div id="suggested-content">
     <main class="grid">
       <slider v-if="trending" :movies="trending" :title="'Trending'"></slider>
-      <!-- <slider v-if="discover" :movies="discover" :title="'Discover'"></slider> -->
+      <slider v-if="discover" :movies="discover" :title="'Discover'"></slider>
     </main>
   </div>
 </template>
