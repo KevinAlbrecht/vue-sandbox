@@ -1,6 +1,15 @@
 <template>
   <div class="slider_main">
-    <h2 class="title">{{ title }}</h2>
+    <div class="header">
+      <h2 class="title">{{ title }}</h2>
+      <ul class="pagination-indicator">
+        <li
+          v-for="page in pagesCount"
+          :key="page"
+          :class="{ active: page === activePage }"
+        ></li>
+      </ul>
+    </div>
     <div class="slider_container">
       <span @click="slide(true)" class="arrow arrow-prev"><b></b></span>
       <div
@@ -43,6 +52,8 @@ export default {
   data() {
     return {
       $_isInfinite: false,
+      pagesCount: 0,
+      activePage: 1,
       get slideUnity() {
         return 100;
       },
@@ -58,6 +69,7 @@ export default {
     },
     slide(isLeft = false) {
       if (this.inTransition === false) {
+        this.$_computeActivePage(isLeft);
         if (this.$_isInfinite) {
           this.$_preReorder(isLeft);
           this.translate += isLeft ? -itemRatio : itemRatio;
@@ -76,6 +88,12 @@ export default {
           } else this.$_isInfinite = true;
         }, 700);
       }
+    },
+    $_computeActivePage(isLeft = false) {
+      if (this.activePage === this.pagesCount && !isLeft) this.activePage = 1;
+      else if (this.activePage === 1 && isLeft)
+        this.activePage = this.pagesCount;
+      else this.activePage += isLeft ? -1 : +1;
     },
     $_preReorder(isLeft = false) {
       if (isLeft)
@@ -99,21 +117,53 @@ export default {
   },
   computed: {
     sliderTransform() {
-      return `translateX(calc(${this.translate}% + ${Math.abs(this.translate)}px))`;
+      return `translateX(calc(${this.translate}% + ${Math.abs(
+        this.translate
+      )}px))`;
     },
     computeBoxWidth() {
       return `width: calc(${itemRatio}% - 10px + 5px);`;
     },
   },
+  beforeMount() {
+    this.pagesCount = Math.floor(this.movies.length / 6);
+  },
 };
 </script>
 
 <style>
-.slider_main h2.title {
+/* HEADER */
+.slider_main .header {
+  padding: 0 10px 0 50px;
+  display: flex;
+  align-items: center;
+}
+.slider_main .header h2.title {
   color: white;
-  padding-left: 50px;
+  flex: 1;
 }
 
+/* HEADER pagination */
+.slider_main .header ul.pagination-indicator {
+  list-style-type: none;
+  display: none;
+}
+.slider_main:hover .header ul.pagination-indicator {
+  display: inline;
+}
+.slider_main .header ul.pagination-indicator li {
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  background-color: #4d4d4d;
+  margin-left: 1px;
+}
+
+.slider_main .header ul.pagination-indicator li.active {
+  background-color: #aaa;
+}
+
+/* CONTAINER */
 .slider_main .slider_container {
   position: relative;
 }
