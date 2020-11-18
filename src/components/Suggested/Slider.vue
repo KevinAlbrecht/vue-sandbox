@@ -7,22 +7,25 @@
         v-if="vMovies"
         :class="['slider_slide', inTransition ? 'in-transition' : '']"
         :style="{
-          transform: `translateX(calc(${translate}% + ${Math.abs(
-            translate
-          )}px))`,
+          transform: sliderTransform,
         }"
       >
-        <div class="box" v-for="movie in vMovies" :key="movie.id">
-          <!-- <router-link
+        <div
+          class="box"
+          :style="computeBoxWidth"
+          v-for="movie in vMovies"
+          :key="movie.id"
+        >
+          <router-link
             :to="{
               name: 'movie',
               params: { movieId: movie.id, movieName: movie.title },
             }"
-          > -->
-          <div class="img_container">
-            <img v-once :src="computePosterUrl(movie.poster_path)" />
-          </div>
-          <!-- </router-link> -->
+          >
+            <div class="img_container">
+              <img v-once :src="computePosterUrl(movie.poster_path)" />
+            </div>
+          </router-link>
         </div>
       </div>
       <span @click="slide()" class="arrow arrow-next"><b></b></span>
@@ -31,10 +34,15 @@
 </template>
 
 <script>
+// items count hardcoded for the moment
+// 16.66666667 represent 100 / n =  where N = elements to show in slider -> 100 / 6  = 16.66666***
+const itemRatio = 16.66666667;
+
 export default {
   props: ["movies", "title"],
   data() {
     return {
+      $_isInfinite: false,
       get slideUnity() {
         return 100;
       },
@@ -50,37 +58,57 @@ export default {
     },
     slide(isLeft = false) {
       if (this.inTransition === false) {
-        this.inTransition = true;
-        isLeft
-          ? (this.translate += this.slideUnity)
-          : (this.translate -= this.slideUnity);
-
+        if (this.$_isInfinite) {
+          this.$_preReorder(isLeft);
+          this.translate += isLeft ? -itemRatio : itemRatio;
+        }
+        setTimeout(() => {
+          this.inTransition = true;
+          isLeft
+            ? (this.translate += this.slideUnity)
+            : (this.translate -= this.slideUnity);
+        }, 0);
         setTimeout(() => {
           this.inTransition = false;
-          if (this.translate !== -this.slideUnity) {
+          if (this.$_isInfinite) {
             this.translate = -this.slideUnity;
             this.$_reorder(isLeft);
-          }
+          } else this.$_isInfinite = true;
         }, 700);
       }
+    },
+    $_preReorder(isLeft = false) {
+      if (isLeft)
+        this.vMovies.unshift(
+          ...this.vMovies.splice(this.vMovies.length - 1, 1)
+        );
+      if (!isLeft) this.vMovies.push(...this.vMovies.splice(0, 1));
     },
     $_reorder(isLeft = false) {
       const moviesCount = this.vMovies.length;
       const itemsToReorder = Math.floor(moviesCount / 3);
       if (isLeft)
         this.vMovies.unshift(
-          ...this.vMovies.splice(moviesCount - itemsToReorder, itemsToReorder)
+          ...this.vMovies.splice(
+            moviesCount - itemsToReorder + 1,
+            itemsToReorder
+          )
         );
-      else this.vMovies.push(...this.vMovies.splice(0, itemsToReorder));
+      else this.vMovies.push(...this.vMovies.splice(0, itemsToReorder - 1));
+    },
+  },
+  computed: {
+    sliderTransform() {
+      return `translateX(calc(${this.translate}% + ${Math.abs(this.translate)}px))`;
+    },
+    computeBoxWidth() {
+      return `width: calc(${itemRatio}% - 10px + 5px);`;
     },
   },
 };
 </script>
 
 <style>
-.slider_main {
-}
-
 .slider_main h2.title {
   color: white;
   padding-left: 50px;
@@ -94,7 +122,7 @@ export default {
 
 .slider_main .slider_container .arrow {
   position: absolute;
-  z-index: 10;
+  z-index: 1;
   top: 0;
   bottom: 0;
   width: 50px;
@@ -148,7 +176,6 @@ export default {
 }
 
 .slider_main .slider_container .slider_slide .box {
-  width: calc(16.66666667% - 10px + 5px);
   display: inline-block;
   margin-right: 5px;
 }
