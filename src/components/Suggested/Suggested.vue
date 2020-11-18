@@ -37,4 +37,11 @@ export default {
   width: 100%;
   padding: 50px 0 50px 260px;
 }
+
+#suggested-content .slider_main {
+  margin-bottom: 50px;
+}
+#suggested-content .slider_main:last-child {
+  margin-bottom: 0;
+}
 </style>
