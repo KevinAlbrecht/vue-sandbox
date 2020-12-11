@@ -2,28 +2,6 @@
   <div id="home-menu">
     <ul>
       <li class="category">
-        <span class="category-title">People's choice</span>
-        <div class="content">
-          <ul class="sub-category">
-            <li>
-              <router-link :to="'top-rated'">
-                <span class="topic-title">Top Rated</span>
-              </router-link>
-            </li>
-            <li>
-              <router-link :to="'popular'">
-                <span class="topic-title">Popular</span>
-              </router-link>
-            </li>
-            <li>
-              <router-link :to="'latest'">
-                <span class="topic-title">Latest</span>
-              </router-link>
-            </li>
-          </ul>
-        </div>
-      </li>
-      <li class="category">
         <span class="category-title">Genres</span>
         <div class="content">
           <ul class="sub-category">
