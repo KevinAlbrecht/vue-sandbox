@@ -1,8 +1,8 @@
 <template>
   <div id="suggested-content">
     <main class="grid">
-      <slider v-if="trending" :movies="trending" :title="'Trending'"></slider>
-      <slider v-if="discover" :movies="discover" :title="'Discover'"></slider>
+      <slider v-if="latest" :movies="latest" :title="'Latest'"></slider>
+      <slider v-if="topRated" :movies="topRated" :title="'Top Rated'"></slider>
     </main>
   </div>
 </template>
@@ -13,17 +13,17 @@ import Slider from "./Slider";
 export default {
   components: { Slider },
   data: () => ({
-    discover: null,
-    trending: null,
+    latest: null,
+    topRated: null,
     isLoading: false,
   }),
   methods: {
     async fetchProducts() {
       this.isLoading = true;
-      const suggesteds = await MovieService.getSuggested();
+      const suggesteds = await MovieService.getSuggestions();
       // Q&D Force a slice to choose how many result I need, can't specify 'items per page' in api
-      this.trending = suggesteds.trending.results.slice(0, 18);
-      this.discover = suggesteds.discover.results.slice(0, 18);
+      this.latest = suggesteds.latest.data;
+      this.topRated = suggesteds.topRated.data;
     },
   },
   created() {

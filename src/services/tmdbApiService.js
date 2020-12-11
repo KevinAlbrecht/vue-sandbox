@@ -8,13 +8,18 @@ class TmdbApiService {
 	#latest = 'movie/latest?';
 	#popular = 'movie/popular?';
 	#trending = 'trending/movie/day?';
-	#discorver = 'discover/movie?';
+	#discover = 'discover/movie?';
+
 	constructor() {
 		this.#httpClient = new HttpClient(this.#baseApi, this.#apiKey);
 	}
 
-	async getDiscover() {
-		return await this.#httpClient.fetch(this.#discorver);
+	async getDiscover(query) {
+		const queryScheme = {
+			'page': 'page',
+			'withGenres': 'with_genres'
+		}
+		return await this.#httpClient.fetch(this.#discover, query, queryScheme);
 	}
 	async getTrending() {
 		return await this.#httpClient.fetch(this.#trending);

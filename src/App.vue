@@ -11,8 +11,10 @@
 </template>
 
 <script>
+import MoviePoster from "./components/MoviePoster";
 export default {
   name: "App",
+  components: { MoviePoster },
   computed: {
     theme() {
       return this.$vuetify.theme.dark ? "dark" : "light";

@@ -1,29 +1,33 @@
-import tmdbApiService from './tmdbApiService';
+import vodApiService from './vodApiService';
+class MoviesService {
+	#genres;
 
-const asyncMockTimer = (value) => new Promise((resolve) => setTimeout(() => resolve(value), 600));
-
-export default {
 	handleError(err) {
 		console.log('err', err);
 		return {};
-	},
+	}
+
+	constructor() { }
+
+	async getSuggestions() {
+		const response = await vodApiService.getSuggestions().catch(this.handleError);	
+		return await response.json();
+	}
+
 	async getGenres() {
-		return (await (await tmdbApiService.getGenres().catch(this.handleError)).json()).genres;
-	},
-	async getTopRaded() {
-		return (await (await tmdbApiService.getTopRaded().catch(this.handleError)).json()).genres;
-	},
-	async getLatest() {
-		return (await (await tmdbApiService.getLatest().catch(this.handleError)).json()).genres;
-	},
-	async getPopular() {
-		return (await (await tmdbApiService.getPopular().catch(this.handleError)).json()).genres;
-	},
-	async getSuggested() {
-		const rawResults = await Promise.all([
-			tmdbApiService.getDiscover().catch(this.handleError),
-			tmdbApiService.getTrending().catch(this.handleError)]);
-		const jsonResults = await Promise.all([...rawResults].map(r => r.json()))
-		return { discover: jsonResults[0], trending: jsonResults[1] };
-	},
+		if (!this.#genres){
+			const result =  await vodApiService.getGenres().catch(this.handleError);
+			this.#genres = await result.json();
+		}
+		return this.#genres;
+	}
+
+	async getMoviesByGenreId(genreId) {
+		return (await (await vodApiService.getMoviesByGenreId(genreId).catch(this.handleError)).json());
+	}
+	async getMoviesById(movieId) {
+		return (await (await vodApiService.getMovieById(movieId).catch(this.handleError)).json());
+	}
 }
+const instance = new MoviesService();
+export default instance;

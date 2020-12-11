@@ -28,14 +28,13 @@
         <div class="content">
           <ul class="sub-category">
             <li v-for="genre in genres" :key="genre.id">
-              <router-link
+               <router-link
                 :to="{
                   name: 'genre',
-                  params: { genreName: genre.name, genreId: genre.id },
-                }"
-              >
-                <span class="topic-title">{{ genre.name }}</span>
-              </router-link>
+                  params: { genreName: toSlug(genre.title),genreId: genre.id },
+                }"> 
+								<span class="topic-title">{{ genre.title }}</span>
+              </router-link> 
             </li>
           </ul>
         </div>
@@ -45,13 +44,15 @@
 </template>
 <script>
 import MoviesService from "../../../services/moviesService";
+import Slugify from "../../../helpers/Slugify";
 
 export default {
   methods: {
+    toSlug: Slugify,
     async fetchCategories() {
       this.isLoading = true;
       const result = await MoviesService.getGenres();
-      this.genres = result;
+      this.genres = result.data;
       this.isLoading = false;
     },
   },

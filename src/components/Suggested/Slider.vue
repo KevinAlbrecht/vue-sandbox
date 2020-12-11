@@ -32,7 +32,7 @@
             }"
           >
             <div class="img_container">
-              <img v-once :src="computePosterUrl(movie.poster_path)" />
+              <img v-once :src="computePosterUrl(movie.posterPath)" />
             </div>
           </router-link>
         </div>
